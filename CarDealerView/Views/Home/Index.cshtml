@@ -1,0 +1,50 @@
+﻿@{ ViewData["Title"] = "Home Page"; }
+@using IdentitySample.Models.AccountViewModels
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+@if (User.Identity.IsAuthenticated)
+{
+<table>
+    @foreach (var claim in User.Claims)
+    {
+    <tr>
+        <td>@claim.Type</td>
+        <td>@claim.Value</td>
+    </tr>
+    }
+</table>
+<br />
+<table>
+    @foreach (var role in RoleManager.Roles)
+    {
+       <tr>
+           <td>@role.Name</td>
+           <td>
+               @foreach (var user in UserManager.Users)
+               {
+                   <table>
+                       <tr>
+                           <td>@user.Email</td>
+                               @if (await UserManager.IsInRoleAsync(@user, @role.Name))
+                               { 
+                                <td>Tak</td>   
+                               }
+                       </tr>
+                   </table>
+               }
+           </td>
+       </tr>
+    }
+</table>
+
+}
+
